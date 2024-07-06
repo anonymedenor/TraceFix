@@ -12,12 +12,18 @@ jobs:
         apt-get install -qq -y wget unzip build-essential gcc-multilib g++-multilib libgcc1:i386
 
     - name: Run build
-      run: make  # Adjust the build command as per your project requirements
-
+      working-directory: ./TraceFix
+      run: make
+    
     - name: Move release file to publish
       run: |
+        # Make path
         mkdir -p publish/addons/tracefix/dlls
+
+        # Move released file to dlls
         mv ./TraceFix/Release/tracefix_mm.so publish/addons/tracefix/dlls
+
+        # Copy cstrike contents to publish dir
         cp -ar cstrike/. publish
 
     - name: Deploy artifacts
