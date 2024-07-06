@@ -10,22 +10,37 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
 
     steps:
     - uses: actions/checkout@v3
     
-    - name: Add i386 architecture
-      run: dpkg --add-architecture i386
-      
-    - name: Update repository
-      run: apt-get update
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Example: Use Node.js version 14, which is compatible with Ubuntu 20.04
 
+    - name: Add i386 architecture
+      run: sudo dpkg --add-architecture i386
+      
+    - name: Update repository and upgrade packages
+      run: |
+        sudo apt-get update
+        sudo apt-get upgrade -y
+
+    - name: Clean package cache
+      run: sudo apt-get clean
+      
     - name: Install build dependencies
-      run: apt-get install -qq -y wget unzip build-essential gcc-4.8-multilib g++-4.8-multilib libgcc1 libgcc1:i386 libc6-dev libc6-dev-i386
+      run: |
+        sudo apt-get install -qq -y wget unzip build-essential gcc-multilib g++-multilib libgcc1 libgcc1:i386 libc6-dev libc6-dev-i386
     
     - name: Update alternatives
-      run: update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
+      run: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10
+
+    - name: Verify GCC version
+      run: |
+        gcc --version
+        g++ --version
 
     - name: Run build
       working-directory: ./TraceFix
