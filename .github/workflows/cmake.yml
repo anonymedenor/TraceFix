@@ -23,7 +23,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: linux
-        path: ${{github.workspace}}/build/hitbox_fix_mm_i386.so
+        path: ${{github.workspace}}/build/tracefix_mm_i386.so
           
   build_windows:
     runs-on: windows-latest
@@ -73,7 +73,7 @@ jobs:
         run: |
           mkdir -p addons/tracefix
           cp cstrike/addons/tracefix/tracefix.cfg tracefix_mm.dll tracefix_mm_i386.so addons/tracefix
-          7z a -tzip hitbox_fix-bin.zip addons
+          7z a -tzip hitbox_fix-bin.zip addons/tracefix
         
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -83,5 +83,7 @@ jobs:
           name: Release ${{ env.RELEASE_VERSION }}
           body: |
             Release ${{ env.RELEASE_VERSION }}
+            - Added support for improved hitbox detection.
+            - Fixed performance issues on Windows.
           draft: false
           prerelease: false
