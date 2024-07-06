@@ -8,7 +8,7 @@ on:
 jobs:
   build_linux:
     runs-on: ubuntu-latest
-    container: s1lentq/linux86buildtools:latest
+    container: ubuntu:18.04
     
     env:
       CMAKE_TOOLCHAIN_FILE: ${{github.workspace}}/cmake/linux-i686.cmake
