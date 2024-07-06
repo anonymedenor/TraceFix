@@ -4,7 +4,7 @@ plugin_info_t Plugin_info =
 {
 	META_INTERFACE_VERSION,
 	"Trace Line Fix",
-	"1.2.2-dev",
+	"2.2.2-dev",
 	__DATE__,
 	"SmileY",
 	"https://github.com/SmileYzn/TraceFix",
