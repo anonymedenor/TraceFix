@@ -54,8 +54,9 @@ void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonster
 							if ((Player->m_pActiveItem->iItemSlot() == PRIMARY_WEAPON_SLOT) || (Player->m_pActiveItem->iItemSlot() == PISTOL_SLOT))
 							{
 								auto DistanceLimit = this->m_tf_distance[Player->m_pActiveItem->m_iId]->value;
+								bool OnGround = (Player->pev->flags & FL_ONGROUND) != 0;
 
-								if (DistanceLimit > 0.0f)
+								if (DistanceLimit > 0.0f && OnGround)
 								{
 									auto trResult = gTraceUtil.GetUserAiming(pentToSkip, DistanceLimit);
 
