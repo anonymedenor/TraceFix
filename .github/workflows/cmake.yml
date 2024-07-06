@@ -23,7 +23,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        apt-get install -y libc6-dev:i386 g++-multilib
+          sudo dpkg --add-architecture i386  # Add support for 32-bit architecture if not already added
+          sudo apt update  # Update package lists
+          sudo apt install -y libc6-dev:i386 g++-multilib
+
 
     - name: Configure CMake
       shell: bash
