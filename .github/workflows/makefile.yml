@@ -39,7 +39,7 @@ jobs:
         cp -ar cstrike/. publish
 
     - name: Deploy artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: tracefix-linux
         path: publish/*
