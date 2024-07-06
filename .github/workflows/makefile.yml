@@ -13,7 +13,7 @@ jobs:
     container: ubuntu:18.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       
     - name: Add i386 architecture
       run: dpkg --add-architecture i386
@@ -43,7 +43,7 @@ jobs:
         cp -ar cstrike/. publish
 
     - name: Deploy artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tracefix-linux
         path: publish/*
