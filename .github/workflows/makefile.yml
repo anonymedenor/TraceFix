@@ -1,50 +1,27 @@
-name: Linux Build CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu:20.04  # Update to a newer version that includes GLIBC 2.28 or higher
+    container: ubuntu:20.04  # Adjust the base image as necessary
 
     steps:
     - uses: actions/checkout@v4
-      
-    - name: Add i386 architecture
-      run: dpkg --add-architecture i386
-      
-    - name: Update repository
-      run: apt-get update
 
-    - name: Install build dependencies
-      run: apt-get install -qq -y wget unzip build-essential gcc-4.8-multilib g++-4.8-multilib libgcc1:i386
-    
-    - name: Update alternatives
-      run: update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
+    - name: Install dependencies
+      run: |
+        apt-get update
+        apt-get install -qq -y wget unzip build-essential gcc-multilib g++-multilib libgcc1:i386
 
     - name: Run build
-      working-directory: ./TraceFix
-      run: make
-    
+      run: make  # Adjust the build command as per your project requirements
+
     - name: Move release file to publish
       run: |
-        # Make path
         mkdir -p publish/addons/tracefix/dlls
-
-        # Move released file to dlls
         mv ./TraceFix/Release/tracefix_mm.so publish/addons/tracefix/dlls
-
-        # Copy cstrike contents to publish dir
         cp -ar cstrike/. publish
 
     - name: Deploy artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v2
       with:
         name: tracefix-linux
         path: publish/*
