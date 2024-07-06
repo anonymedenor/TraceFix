@@ -8,9 +8,13 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     container: ubuntu:20.04  # Adjust the base image as necessary
 
+    steps:
+    - uses: actions/checkout@v3
+      
     - name: Add i386 architecture
       run: dpkg --add-architecture i386
       
@@ -24,23 +28,22 @@ jobs:
       run: update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
 
     - name: Run build
-      working-directory: ./TraceFix
+      working-directory: ./AccuracyFix
       run: make
     
     - name: Move release file to publish
       run: |
-        # Make path
-        mkdir -p publish/addons/tracefix/dlls
+        # Make Accuracy Fix path
+        mkdir -p publish/addons/accuracyfix/dlls
 
         # Move released file to dlls
-        mv ./TraceFix/Release/tracefix_mm.so publish/addons/tracefix/dlls
+        mv ./AccuracyFix/Release/accuracyfix_mm.so publish/addons/accuracyfix/dlls
 
-        # Copy cstrike contents to publish dir
-        cp -ar cstrike/. publish
+        # Move settings file to folder
+        mv ./cstrike/addons/accuracyfix/accuracyfix.cfg publish/addons/accuracyfix/accuracyfix.cfg
 
     - name: Deploy artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
-        name: tracefix-linux
+        name: accuracyfix-linux
         path: publish/*
-
