@@ -33,55 +33,36 @@ void CTraceFix::ServerActivate()
 	gTraceUtil.ServerCommand("exec %s/tracefix.cfg", gTraceUtil.GetPath());
 }
 
-void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonsters, edict_t* pentToSkip, TraceResult* ptr)
+void CAccuracyFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonsters, edict_t* pentToSkip, TraceResult* ptr)
 {
-	if (fNoMonsters == dont_ignore_monsters)
+	auto EntityIndex = ENTINDEX(pentToSkip);
+
+	if (EntityIndex > 0 && EntityIndex <= gpGlobals->maxClients)
 	{
-		if (!FNullEnt(pentToSkip))
+		auto Player = UTIL_PlayerByIndexSafe(EntityIndex);
+
+		if (fNoMonsters == dont_ignore_monsters && Player && Player->IsAlive() && Player->m_pActiveItem)	
 		{
-			auto EntityIndex = g_engfuncs.pfnIndexOfEdict(pentToSkip);
-
-			if (EntityIndex > 0 && EntityIndex <= gpGlobals->maxClients)
+			if ((Player->m_pActiveItem->iItemSlot() == PRIMARY_WEAPON_SLOT) || (Player->m_pActiveItem->iItemSlot() == PISTOL_SLOT))	
 			{
-				auto Player = UTIL_PlayerByIndexSafe(EntityIndex);
+				auto aimDistance = this->m_af_distance[Player->m_pActiveItem->m_iId]->value;
+				bool OnGround = (Player->pev->flags & FL_ONGROUND) != 0;
 
-				if (Player)
+				int TargetIndex = 0, HitBoxPlace = 0;
+				auto trResult = gTraceUtil.GetUserAiming(pentToSkip, &TargetIndex, &HitBoxPlace, aimDistance);
+				float ffAccuracy = OnGround ? 9999.0f : 0.0f;	
+					
+				if (trResult > 0.0f)
 				{
-					if (Player->IsAlive())
-					{
-						if (Player->m_pActiveItem)
-						{
-							if ((Player->m_pActiveItem->iItemSlot() == PRIMARY_WEAPON_SLOT) || (Player->m_pActiveItem->iItemSlot() == PISTOL_SLOT))
-							{
-								auto DistanceLimit = this->m_tf_distance[Player->m_pActiveItem->m_iId]->value;
-								bool OnGround = (Player->pev->flags & FL_ONGROUND) != 0;
+					g_engfuncs.pfnMakeVectors(pentToSkip->v.v_angle);
 
-								if (DistanceLimit > 0.0f && OnGround)
-								{
-									auto trResult = gTraceUtil.GetUserAiming(pentToSkip, DistanceLimit);
+					Vector Result = Vector(0.0f, 0.0f, 0.0f);
 
-									if (!FNullEnt(trResult.pHit))
-									{
-										auto TargetIndex = ENTINDEX(trResult.pHit);
+					Result[0] = (vStart[0] + (gpGlobals->v_forward[0] * ffAccuracy));
+					Result[1] = (vStart[1] + (gpGlobals->v_forward[1] * ffAccuracy));
+					Result[2] = (vStart[2] + (gpGlobals->v_forward[2] * ffAccuracy));
 
-										if (TargetIndex > 0 && TargetIndex <= gpGlobals->maxClients)
-										{
-											g_engfuncs.pfnMakeVectors(pentToSkip->v.v_angle);
-
-											auto vEndRes = Vector
-											(
-												(vStart[0] + (gpGlobals->v_forward[0] * 9999.0f)),
-												(vStart[1] + (gpGlobals->v_forward[1] * 9999.0f)),
-												(vStart[2] + (gpGlobals->v_forward[2] * 9999.0f))
-											);
-
-											g_engfuncs.pfnTraceLine(vStart, vEndRes, fNoMonsters, pentToSkip, ptr);
-										}
-									}
-								}
-							}
-						}
-					}
+					g_engfuncs.pfnTraceLine(vStart, Result, fNoMonsters, pentToSkip, ptr);	
 				}
 			}
 		}
