@@ -8,13 +8,13 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
-    container: ubuntu:20.04
+    container: ubuntu:18.04
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      
+    - uses: actions/checkout@v3
+    
     - name: Add i386 architecture
       run: dpkg --add-architecture i386
       
@@ -22,9 +22,12 @@ jobs:
       run: apt-get update
 
     - name: Install build dependencies
-      run: apt-get install -qq -y wget unzip build-essential gcc-multilib g++-multilib libgcc1:i386
+      run: apt-get install -qq -y wget unzip build-essential gcc-4.8-multilib g++-4.8-multilib libgcc1 libgcc1:i386 libc6-dev libc6-dev-i386
+    
+    - name: Update alternatives
+      run: update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
 
-   - name: Run build
+    - name: Run build
       working-directory: ./TraceFix
       run: make
     
@@ -40,7 +43,7 @@ jobs:
         cp -ar cstrike/. publish
 
     - name: Deploy artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: tracefix-linux
         path: publish/*
