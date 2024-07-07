@@ -54,7 +54,7 @@ void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonster
 					auto trResult = gTraceUtil.GetUserAiming(pentToSkip, &TargetIndex, &HitBoxPlace, aimDistance);
 					float ffAccuracy = OnGround ? 9999.0f : 0.0f;
 
-					if (!FNullEnt(trResult.pHit))
+					if (gTraceUtil.GetUserAiming(pentToSkip, &TargetIndex, &HitBoxPlace, aimDistance) > 0.0f)
 					{
 						g_engfuncs.pfnMakeVectors(pentToSkip->v.v_angle);
 
