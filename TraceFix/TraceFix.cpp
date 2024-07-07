@@ -57,13 +57,14 @@ void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonster
 					{
 						g_engfuncs.pfnMakeVectors(pentToSkip->v.v_angle);
 
-						Vector Result = Vector(0.0f, 0.0f, 0.0f);
+						auto vEndRes = Vector
+						(
+							(vStart[0] + (gpGlobals->v_forward[0] * 9999.0f)),
+							(vStart[1] + (gpGlobals->v_forward[1] * 9999.0f)),
+							(vStart[2] + (gpGlobals->v_forward[2] * 9999.0f))
+						);
 
-						Result[0] = (vStart[0] + (gpGlobals->v_forward[0] * ffAccuracy));
-						Result[1] = (vStart[1] + (gpGlobals->v_forward[1] * ffAccuracy));
-						Result[2] = (vStart[2] + (gpGlobals->v_forward[2] * ffAccuracy));
-
-						g_engfuncs.pfnTraceLine(vStart, Result, fNoMonsters, pentToSkip, ptr);
+						g_engfuncs.pfnTraceLine(vStart, vEndRes, fNoMonsters, pentToSkip, ptr);
 					}
 				}
 			}
