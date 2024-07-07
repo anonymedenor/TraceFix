@@ -12,13 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:20.04  # Adjust the base image as necessary
 
-    steps:
-    - uses: actions/checkout@v4
+   steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Add i386 architecture
+      run: dpkg --add-architecture i386
+      
+    - name: Update repository
+      run: apt-get update
 
-    - name: Install dependencies
-      run: |
-        apt-get update
-        apt-get install -qq -y wget unzip build-essential gcc-multilib g++-multilib libgcc1:i386
+    - name: Install build dependencies
+      run: apt-get install -qq -y wget unzip build-essential gcc-multilib g++-multilib libgcc1:i386
 
     - name: Run build
       working-directory: ./TraceFix
