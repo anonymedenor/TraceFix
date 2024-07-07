@@ -50,6 +50,7 @@ void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonster
 				if (DistanceLimit > 0.0f)
 				{
 					bool OnGround = (Player->pev->flags & FL_ONGROUND) != 0;
+					int TargetIndex = 0, HitBoxPlace = 0;
 					auto trResult = gTraceUtil.GetUserAiming(pentToSkip, &TargetIndex, &HitBoxPlace, aimDistance);
 					float ffAccuracy = OnGround ? 9999.0f : 0.0f;
 
