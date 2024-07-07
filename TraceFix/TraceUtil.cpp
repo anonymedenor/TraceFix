@@ -71,7 +71,7 @@ void CTraceUtil::ServerCommand(const char* Format, ...)
 	g_engfuncs.pfnServerCommand(Command);
 }
 
-float CAccuracyFix::GetUserAiming(edict_t* pEdict, int* cpId, int* cpBody, float distance)
+float CTraceUtil::GetUserAiming(edict_t* pEdict, int* cpId, int* cpBody, float distance)
 {
 	float Result = 0.0f;
 
