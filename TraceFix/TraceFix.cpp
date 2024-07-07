@@ -45,16 +45,15 @@ void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonster
 		{
 			if ((Player->m_pActiveItem->iItemSlot() == PRIMARY_WEAPON_SLOT) || (Player->m_pActiveItem->iItemSlot() == PISTOL_SLOT))	
 			{
-				auto aimDistance = this->m_tf_distance[Player->m_pActiveItem->m_iId]->value;
-	
-				if (aimDistance > 0.0f)
+				auto DistanceLimit = this->m_tf_distance[Player->m_pActiveItem->m_iId]->value;
+
+				if (DistanceLimit > 0.0f)
 				{
 					bool OnGround = (Player->pev->flags & FL_ONGROUND) != 0;
-					int TargetIndex = 0, HitBoxPlace = 0;
 					auto trResult = gTraceUtil.GetUserAiming(pentToSkip, &TargetIndex, &HitBoxPlace, aimDistance);
 					float ffAccuracy = OnGround ? 9999.0f : 0.0f;
-					
-					if (trResult > 0.0f)
+
+					if (!FNullEnt(trResult.pHit))
 					{
 						g_engfuncs.pfnMakeVectors(pentToSkip->v.v_angle);
 
@@ -64,8 +63,8 @@ void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonster
 						Result[1] = (vStart[1] + (gpGlobals->v_forward[1] * ffAccuracy));
 						Result[2] = (vStart[2] + (gpGlobals->v_forward[2] * ffAccuracy));
 
-						g_engfuncs.pfnTraceLine(vStart, Result, fNoMonsters, pentToSkip, ptr);	
-					}	
+						g_engfuncs.pfnTraceLine(vStart, Result, fNoMonsters, pentToSkip, ptr);
+					}
 				}
 			}
 		}
