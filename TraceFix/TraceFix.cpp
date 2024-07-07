@@ -33,7 +33,7 @@ void CTraceFix::ServerActivate()
 	gTraceUtil.ServerCommand("exec %s/tracefix.cfg", gTraceUtil.GetPath());
 }
 
-void CAccuracyFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonsters, edict_t* pentToSkip, TraceResult* ptr)
+void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonsters, edict_t* pentToSkip, TraceResult* ptr)
 {
 	auto EntityIndex = ENTINDEX(pentToSkip);
 
