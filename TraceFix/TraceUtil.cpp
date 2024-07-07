@@ -71,27 +71,44 @@ void CTraceUtil::ServerCommand(const char* Format, ...)
 	g_engfuncs.pfnServerCommand(Command);
 }
 
-TraceResult CTraceUtil::GetUserAiming(edict_t* pEntity, float DistanceLimit)
+float CAccuracyFix::GetUserAiming(edict_t* pEdict, int* cpId, int* cpBody, float distance)
 {
-	TraceResult Result = { };
+	float Result = 0.0f;
 
-	if (!FNullEnt(pEntity))
+	if (!FNullEnt(pEdict))
 	{
-		auto EntityIndex = g_engfuncs.pfnIndexOfEdict(pEntity);
+		auto Entityindex = ENTINDEX(pEdict);
 
-		if (EntityIndex > 0 && EntityIndex <= gpGlobals->maxClients)
+		if (Entityindex > 0 && Entityindex <= gpGlobals->maxClients)
 		{
 			Vector v_forward;
 
-			Vector v_src = pEntity->v.origin + pEntity->v.view_ofs;
+			Vector v_src = pEdict->v.origin + pEdict->v.view_ofs;
 
-			g_engfuncs.pfnAngleVectors(pEntity->v.v_angle, v_forward, NULL, NULL);
+			g_engfuncs.pfnAngleVectors(pEdict->v.v_angle, v_forward, nullptr, nullptr);
 
-			Vector v_dest = v_src + v_forward * DistanceLimit;
+			TraceResult trEnd;
 
-			g_engfuncs.pfnTraceLine(v_src, v_dest, 0, pEntity, &Result);
+			Vector v_dest = v_src + v_forward * distance;
+
+			g_engfuncs.pfnTraceLine(v_src, v_dest, 0, pEdict, &trEnd);
+
+			*cpId = FNullEnt(trEnd.pHit) ? 0 : ENTINDEX(trEnd.pHit);
+
+			*cpBody = trEnd.iHitgroup;
+
+			if (trEnd.flFraction < 1.0f)
+			{
+				Result = (trEnd.vecEndPos - v_src).Length();
+			}
+
+			return Result;
 		}
 	}
+
+	*cpId = 0;
+
+	*cpBody = 0;
 
 	return Result;
 }
