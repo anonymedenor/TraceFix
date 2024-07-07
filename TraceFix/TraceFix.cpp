@@ -50,10 +50,10 @@ void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonster
 				if (DistanceLimit > 0.0f)
 				{
 					bool OnGround = (Player->pev->flags & FL_ONGROUND) != 0;
-					int TargetIndex = 0, HitBoxPlace = 0;
+					auto trResult = gTraceUtil.GetUserAiming(pentToSkip, DistanceLimit);
 					float ffAccuracy = OnGround ? 9999.0f : 0.0f;
 
-					if (gTraceUtil.GetUserAiming(pentToSkip, &TargetIndex, &HitBoxPlace, DistanceLimit) > 0.0f)
+					if (!FNullEnt(trResult.pHit))
 					{
 						g_engfuncs.pfnMakeVectors(pentToSkip->v.v_angle);
 
