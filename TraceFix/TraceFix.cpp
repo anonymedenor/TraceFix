@@ -45,7 +45,7 @@ void CTraceFix::TraceLine(const float* vStart, const float* vEnd, int fNoMonster
 		{
 			if ((Player->m_pActiveItem->iItemSlot() == PRIMARY_WEAPON_SLOT) || (Player->m_pActiveItem->iItemSlot() == PISTOL_SLOT))	
 			{
-				auto aimDistance = this->m_af_distance[Player->m_pActiveItem->m_iId]->value;
+				auto aimDistance = this->m_tf_distance[Player->m_pActiveItem->m_iId]->value;
 	
 				if (aimDistance > 0.0f)
 				{
